@@ -2,15 +2,19 @@ import sys
 import json
 from pprint import pprint
 
+pbp_data = []
+moments_data = []
 
 # 1. Import data specified by a the game number (CL argument)
 def importData(game_id):
-    f = open(game_id + '-pbp.json', 'rU')
-
     with open(game_id + '-pbp.json') as pbp_json_file:
+        global pbp_data
         pbp_data = json.load(pbp_json_file)
 
-    pprint(pbp_data['parameters']['GameID'])
+    with open(game_id + '.json') as moments_json_file:
+        global moments_data
+        moments_data = json.load(moments_json_file)
+
 
 # 2. Process Play-by-play data into usable form
     # a. Need to get Player ID from moment data
