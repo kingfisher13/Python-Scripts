@@ -15,6 +15,11 @@ def importData(game_id):
         global moments_data
         moments_data = json.load(moments_json_file)
 
+def createPlayersDict():
+    home_players = moments_data['events'][0]['home']['players']
+    visitor_players = moments_data['events'][0]['visitor']['players']
+    return { 'home': home_players, 'visitor': visitor_players }
+
 
 # 2. Process Play-by-play data into usable form
     # a. Need to get Player ID from moment data
@@ -39,6 +44,7 @@ def main():
 
     game_id = sys.argv[1]
     importData(game_id)
+    players = createPlayersDict()
 
 if __name__ == '__main__':
     main()
