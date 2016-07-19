@@ -30,6 +30,19 @@ def createPlayersDict():
     # a. Flatten events/moments to a single array of frames
     # b. Merge in Play-by-play based on UNIX time stamp
     # c. Divide back into events based on change of possesion flag
+
+def processMomentsData():
+    events = moments_data['events']
+    frames = []
+
+    for event in events:
+        for moment in event['moments']:
+            # if the moment's millisecond value is not equal to the last frame's ms value
+            if len(frames) == 0 or moment[1] > frames[-1][1]:
+                frames.append(moment)
+
+    # print(len(frames))
+
 # 3. Save as new JSON file
 
 
@@ -45,6 +58,7 @@ def main():
     game_id = sys.argv[1]
     importData(game_id)
     players = createPlayersDict()
+    processMomentsData()
 
 if __name__ == '__main__':
     main()
