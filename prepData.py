@@ -1,5 +1,6 @@
 import sys
 import json
+import datetime
 from pprint import pprint
 
 pbp_data = []
@@ -20,12 +21,25 @@ def createPlayersDict():
     visitor_players = moments_data['events'][0]['visitor']['players']
     return { 'home': home_players, 'visitor': visitor_players }
 
-
 # 2. Process Play-by-play data into usable form
     # a. Need to get Player ID from moment data
     # b. Deterine player ID for each play with text analysis
     # c. Calculate UNIX time stamp if not already done
     # d. Add flag for change of possesion
+
+def processPlayByPlayData():
+    plays = []
+    nba_date = moments_data['gamedate']
+    game_time = pbp_data['resultSets'][0]['rowSet'][0][5]
+    game_time_hour = int(game_time[:game_time.find(':')])
+    if 'PM' in game_time:
+        game_time_hour += 12
+    game_time_minute = int(game_time[game_time.find(':') + 1:game_time.find(' ')])
+
+    date = datetime.datetime(int(nba_date[0:4]), int(nba_date[5:7]), int(nba_date[8:10]), game_time_hour, game_time_minute)
+    game_start_unix = date.timestamp()
+
+
 # 2. Clean moment data
     # a. Flatten events/moments to a single array of frames
     # b. Merge in Play-by-play based on UNIX time stamp
@@ -58,6 +72,7 @@ def main():
     game_id = sys.argv[1]
     importData(game_id)
     players = createPlayersDict()
+    processPlayByPlayData()
     processMomentsData()
 
 if __name__ == '__main__':
