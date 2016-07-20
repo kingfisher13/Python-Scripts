@@ -1,6 +1,5 @@
 import sys
 import json
-import datetime
 from pprint import pprint
 
 pbp_data = []
@@ -28,17 +27,10 @@ def processPlayByPlayData():
     Figures out the timestamp;
     Parses the playstrings """
     plays = []
-    nba_date = moments_data['gamedate']
-    start_time = calculateTimeFromNBATimeString(pbp_data['resultSets'][0]['rowSet'][0][5])
-
-    date = datetime.datetime(int(nba_date[0:4]), int(nba_date[5:7]), int(nba_date[8:10]), start_time['hour'], start_time['minute'])
-    game_start_timestamp = date.timestamp()
 
     for nba_play in pbp_data['resultSets'][0]['rowSet']:
-        # generate timestamp
-        play_time = calculateTimeFromNBATimeString(nba_play[5])
-        play_time['seconds'] = 60 - int(nba_play[6][-2]) - 1
-        timestamp = datetime.datetime(int(nba_date[0:4]), int(nba_date[5:7]), int(nba_date[8:10]), play_time['hour'], play_time['minute'], play_time['seconds']).timestamp() * 1000
+        # generate timeinquarter
+        timeinperiod = int(nba_play[6][:nba_play[6].find(':')]) * 60 + int(nba_play[6][nba_play[6].find(':') + 1:])
 
         # parse the various playstrings
         wdw = whoDidWhat(nba_play[7:10]) or {}
@@ -48,22 +40,13 @@ def processPlayByPlayData():
             'eventmsgtype': nba_play[2],
             'eventmsgactiontype': nba_play[3],
             'period': nba_play[4],
-            'timestamp': int(timestamp),
+            'timeinperiod': timeinperiod,
             **wdw
         }
 
         plays.append(play)
 
     return plays
-
-def calculateTimeFromNBATimeString(timestring):
-    """ Takes an NBA time string of hour:minute and splits it """
-    hour = int(timestring[:timestring.find(':')])
-    if 'PM' in timestring:
-        hour += 12
-
-    minute = int(timestring[timestring.find(':') + 1:timestring.find(' ')])
-    return {'hour': hour, 'minute': minute}
 
 def whoDidWhat(details):
     """ Takes the 2 playstrings and parses them """
