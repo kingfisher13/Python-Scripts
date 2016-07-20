@@ -7,8 +7,8 @@ pbp_data = []
 moments_data = []
 players = []
 
-# 1. Import data specified by a the game number (CL argument)
 def importData(game_id):
+    """ Imports Data specified by the game number """
     with open(game_id + '-pbp.json') as pbp_json_file:
         global pbp_data
         pbp_data = json.load(pbp_json_file)
@@ -18,17 +18,15 @@ def importData(game_id):
         moments_data = json.load(moments_json_file)
 
 def createPlayersDict():
+    """ Pulls out the player information for retrieval later """
     home_players = moments_data['events'][0]['home']['players']
     visitor_players = moments_data['events'][0]['visitor']['players']
     return { 'home': home_players, 'visitor': visitor_players }
 
-# 2. Process Play-by-play data into usable form
-    # a. Need to get Player ID from moment data
-    # b. Deterine player ID for each play with text analysis
-    # c. Calculate UNIX time stamp if not already done
-    # d. Add flag for change of possesion
-
 def processPlayByPlayData():
+    """ Process the Play By Play data
+    Figures out the timestamp;
+    Parses the playstrings """
     plays = []
     nba_date = moments_data['gamedate']
     start_time = calculateTimeFromNBATimeString(pbp_data['resultSets'][0]['rowSet'][0][5])
@@ -59,6 +57,7 @@ def processPlayByPlayData():
     return plays
 
 def calculateTimeFromNBATimeString(timestring):
+    """ Takes an NBA time string of hour:minute and splits it """
     hour = int(timestring[:timestring.find(':')])
     if 'PM' in timestring:
         hour += 12
@@ -67,6 +66,7 @@ def calculateTimeFromNBATimeString(timestring):
     return {'hour': hour, 'minute': minute}
 
 def whoDidWhat(details):
+    """ Takes the 2 playstrings and parses them """
     home_play = parsePlay(details[0], 'home') or {}
     visitor_play = parsePlay(details[2], 'visitor') or {}
 
@@ -74,6 +74,9 @@ def whoDidWhat(details):
     return merged
 
 def parsePlay(playstring, location):
+    """ Takes a playstring
+    Figures out the player mentioned.
+    Figures out whether it is an offensive or defensive play. """
     if not playstring:
         return;
 
@@ -121,12 +124,8 @@ def parsePlay(playstring, location):
         }
     }
 
-# 2. Clean moment data
-    # a. Flatten events/moments to a single array of frames
-    # b. Merge in Play-by-play based on UNIX time stamp
-    # c. Divide back into events based on change of possesion flag
-
 def processMomentsData():
+    """ Flatten and de-duplicate moments data """
     events = moments_data['events']
     frames = []
 
@@ -136,13 +135,14 @@ def processMomentsData():
             if len(frames) == 0 or moment[1] > frames[-1][1]:
                 frames.append(moment)
 
+    return frames
 
-# 3. Save as new JSON file
+def merge(plays, frames):
+    """ Merge the play by play data with the moments data """
+    return {}
 
-
-# Other things to maybe include later:
-# Player shooting stats (good defenders stay close to good shooters, and sag off bad ones)
-
+def export(json_data):
+    """ Exports the data into a single json file on disk """
 
 def main():
     if len(sys.argv) != 2:
@@ -151,10 +151,15 @@ def main():
 
     game_id = sys.argv[1]
     importData(game_id)
+
     global players
     players = createPlayersDict()
-    processPlayByPlayData()
-    # processMomentsData()
+
+    plays = processPlayByPlayData()
+    frames = processMomentsData()
+
+    merged = merge(plays, frames)
+    export(merged)
 
 if __name__ == '__main__':
     main()
