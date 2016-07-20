@@ -38,7 +38,7 @@ def processPlayByPlayData():
         # generate timestamp
         play_time = calculateTimeFromNBATimeString(nba_play[5])
         play_time['seconds'] = 60 - int(nba_play[6][-2]) - 1
-        timestamp = datetime.datetime(int(nba_date[0:4]), int(nba_date[5:7]), int(nba_date[8:10]), play_time['hour'], play_time['minute'], play_time['seconds']).timestamp()
+        timestamp = datetime.datetime(int(nba_date[0:4]), int(nba_date[5:7]), int(nba_date[8:10]), play_time['hour'], play_time['minute'], play_time['seconds']).timestamp() * 1000
 
         # parse the various playstrings
         wdw = whoDidWhat(nba_play[7:10]) or {}
