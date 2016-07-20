@@ -43,7 +43,7 @@ def processPlayByPlayData():
         timestamp = datetime.datetime(int(nba_date[0:4]), int(nba_date[5:7]), int(nba_date[8:10]), play_time['hour'], play_time['minute'], play_time['seconds']).timestamp()
 
         # parse the various playstrings
-        wdw = whoDidWhat(nba_play[7:10], nba_play[1]) or {}
+        wdw = whoDidWhat(nba_play[7:10]) or {}
 
         play = {
             'eventnum': nba_play[1],
@@ -56,6 +56,8 @@ def processPlayByPlayData():
 
         plays.append(play)
 
+    return plays
+
 def calculateTimeFromNBATimeString(timestring):
     hour = int(timestring[:timestring.find(':')])
     if 'PM' in timestring:
@@ -64,24 +66,43 @@ def calculateTimeFromNBATimeString(timestring):
     minute = int(timestring[timestring.find(':') + 1:timestring.find(' ')])
     return {'hour': hour, 'minute': minute}
 
-def whoDidWhat(details, play_type):
+def whoDidWhat(details):
     home_play = parsePlay(details[0], 'home') or {}
-    nuetral_play = parsePlay(details[1], 'neutral') or {}
     visitor_play = parsePlay(details[2], 'visitor') or {}
 
-    merged = {**home_play, **nuetral_play, **visitor_play, 'play_type': play_type}
+    merged = {**home_play, **visitor_play}
     return merged
 
 def parsePlay(playstring, location):
     if not playstring:
         return;
 
-    playstring_player_id = 0
+    player_id = None
+    playstring_players = []
 
-    # TODO - extend with various nicknames
-    for player in players['home'] + players['visitor']:
+    for player in players[location]:
         if player['lastname'] in playstring:
-            playstring_player_id = player['playerid']
+            playstring_players.append(player)
+
+    highest_count_of_duplicate_lastnames = 0
+    for player in playstring_players:
+        count_of_lastnames = len([p for p in players[location] if p['lastname'] == player['lastname']])
+        if count_of_lastnames > highest_count_of_duplicate_lastnames:
+            highest_count_of_duplicate_lastnames = count_of_lastnames
+
+    if len(playstring_players) == 1:
+        player_id = playstring_players[0]['playerid']
+    elif len(playstring_players) > 1:
+        playstring_arr = playstring.split()
+        for i, val in enumerate(playstring_arr):
+            for p in playstring_players:
+                if val == p['lastname']:
+                    if highest_count_of_duplicate_lastnames == 1:
+                        player_id = p['playerid']
+                        break;
+                    elif playstring_arr[i-1:i+1] == [p['firstname'][:1] + '.', p['lastname']]:
+                        player_id = p['playerid']
+                        break;
 
     offensivePlays = ['Dunk', 'Jump Shot', 'Bank Shot', 'Dunk Shot', 'Layup', 'Jumper', 'Hook', '3PT', 'MISS', 'Turnover', 'Free Throw', 'Offensive Charge Foul']
     defensivePlays = ['STEAL', 'BLOCK', 'L.B.FOUL', 'P.FOUL', 'S.FOUL', 'Shooting Block Foul', 'Personal Block Foul', 'T.Foul', 'Personal Take Foul']
@@ -95,7 +116,7 @@ def parsePlay(playstring, location):
 
     return {
         side: {
-            'player_id': playstring_player_id,
+            'player_id': player_id,
             'playstring': playstring
         }
     }
@@ -115,7 +136,6 @@ def processMomentsData():
             if len(frames) == 0 or moment[1] > frames[-1][1]:
                 frames.append(moment)
 
-    # print(len(frames))
 
 # 3. Save as new JSON file
 
