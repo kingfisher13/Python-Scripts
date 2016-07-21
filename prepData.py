@@ -4,6 +4,7 @@ import json
 pbp_data = []
 moments_data = []
 players = []
+teams = []
 
 def importData(game_id):
     """ Imports Data specified by the game number """
@@ -20,6 +21,19 @@ def createPlayersDict():
     home_players = moments_data['events'][0]['home']['players']
     visitor_players = moments_data['events'][0]['visitor']['players']
     return { 'home': home_players, 'visitor': visitor_players }
+
+def createTeamDict():
+    home_team = {
+        'name': moments_data['events'][0]['home']['name'],
+        'teamid': moments_data['events'][0]['home']['teamid'],
+        'abbreviation': moments_data['events'][0]['home']['abbreviation']
+    }
+    visitor_team = {
+        'name': moments_data['events'][0]['visitor']['name'],
+        'teamid': moments_data['events'][0]['visitor']['teamid'],
+        'abbreviation': moments_data['events'][0]['visitor']['abbreviation']
+    }
+    return { 'home': home_team, 'visitor': visitor_team }
 
 def processPlayByPlayData():
     """ Process the Play By Play data
@@ -160,6 +174,7 @@ def export(json_data, game_id):
     """ Exports the data into a single json file on disk """
     final = {
         'players': players,
+        'teams': teams,
         'gameData': json_data
     }
     with open('merged-data/' + game_id + '-merged.json', 'w') as export:
@@ -175,6 +190,8 @@ def main():
 
     global players
     players = createPlayersDict()
+    global teams
+    teams = createTeamDict()
 
     plays = processPlayByPlayData()
     frames = processMomentsData()
