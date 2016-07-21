@@ -1,3 +1,6 @@
+data/*
+merged-data/*
+
 # Logs
 logs
 *.log
