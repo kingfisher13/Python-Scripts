@@ -8,11 +8,11 @@ players = []
 
 def importData(game_id):
     """ Imports Data specified by the game number """
-    with open(game_id + '-pbp.json') as pbp_json_file:
+    with open('data/' + game_id + '-pbp.json') as pbp_json_file:
         global pbp_data
         pbp_data = json.load(pbp_json_file)
 
-    with open(game_id + '.json') as moments_json_file:
+    with open('data/' + game_id + '.json') as moments_json_file:
         global moments_data
         moments_data = json.load(moments_json_file)
 
@@ -157,8 +157,10 @@ def merge(plays, frames):
 
     return frames
 
-def export(json_data):
+def export(json_data, game_id):
     """ Exports the data into a single json file on disk """
+    with open(game_id + '-merged.json', 'w') as export:
+        json.dump(json_data, export)
 
 def main():
     if len(sys.argv) != 2:
@@ -175,7 +177,7 @@ def main():
     frames = processMomentsData()
 
     merged = merge(plays, frames)
-    export(merged)
+    export(merged, game_id)
 
 if __name__ == '__main__':
     main()
