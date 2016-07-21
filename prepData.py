@@ -185,18 +185,22 @@ def main():
         print("usage: 123123 where 123123 is the game_id")
         sys.exit(1)
 
+    # import data based on game_id
     game_id = sys.argv[1]
     importData(game_id)
 
+    # get the players and teams
     global players
     players = createPlayersDict()
     global teams
     teams = createTeamDict()
 
+    # process and merge the data
     plays = processPlayByPlayData()
     frames = processMomentsData()
-
     merged = merge(plays, frames)
+
+    # export
     export(merged, game_id)
 
 if __name__ == '__main__':
