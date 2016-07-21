@@ -158,8 +158,12 @@ def merge(plays, frames):
 
 def export(json_data, game_id):
     """ Exports the data into a single json file on disk """
-    with open(game_id + '-merged.json', 'w') as export:
-        json.dump(json_data, export)
+    final = {
+        'players': players,
+        'gameData': json_data
+    }
+    with open('merged-data/' + game_id + '-merged.json', 'w') as export:
+        json.dump(final, export)
 
 def main():
     if len(sys.argv) != 2:
