@@ -1,6 +1,7 @@
 import sys
 import json
 
+# Globals for easy access
 pbp_data = []
 moments_data = []
 players = []
