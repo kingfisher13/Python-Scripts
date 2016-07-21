@@ -1,6 +1,5 @@
 import sys
 import json
-from pprint import pprint
 
 pbp_data = []
 moments_data = []
