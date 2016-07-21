@@ -122,51 +122,40 @@ def processMomentsData():
 
 def merge(plays, frames):
     """ Merge the play by play data with the moments data """
-    print(len(plays))
-    print(plays[20])
-    print(plays[21])
-    # print(frames[0])
-
-    play_index = 4
+    play_index = 0
     times_inserted = 0
 
     frames_index = 0
     for i, p in enumerate(plays):
         period = p['period']
 
-        # play is before any frames in the period
-        if period == frames[frames_index][0] and p['timeinperiod'] > frames[frames_index][2]:
-            continue
+        # periods don't match
+        if period != frames[frames_index][0]:
+            if period > frames[frames_index][0]:
+                while period != frames[frames_index][0]:
+                    frames_index += 1
+            elif period < frames[frames_index][0]:
+                continue
+
+        # periods match
         # play matches a frame (or close to it)
-        elif period == frames[frames_index][0] and p['timeinperiod'] == frames[frames_index][2]:
+        if abs(p['timeinperiod'] - frames[frames_index][2]) <= 0.03:
             frames[frames_index].append(p)
-            frame_index += 1
+            frames_index += 1
+            continue
+        # play is before any frames in the period
+        elif p['timeinperiod'] > frames[frames_index][2]:
             continue
         # play is ahead of the current frame
-        elif period == frames[frames_index][0] and p['timeinperiod'] < frames[frames_index][2]:
-            frames_index += 1
+        elif p['timeinperiod'] < frames[frames_index][2]:
+            while p['timeinperiod'] < frames[frames_index][2] and p['timeinperiod'] != 0:
+                frames_index += 1
+            if abs(p['timeinperiod'] - frames[frames_index][2]) <= 0.03:
+                frames[frames_index].append(p)
+                frames_index += 1
+                continue
 
-
-    # TODO - plays before frames - toss aside, but need to set play_index to first usable play
-
-    merged = frames
-    for i, p in enumerate(merged):
-        if p[2] < 575 and p[2] > 570 and p[0] == 1:
-            print('-----')
-            # print(plays[play_index]['timeinperiod'])
-            print(p[0], p[2], 'merged', merged[i + 1][2])
-            print(plays[play_index]['timeinperiod'] < p[2] and plays[play_index]['timeinperiod'] > merged[i + 1][2])
-        if (plays[play_index]['timeinperiod'] == p[2] or
-            abs(plays[play_index]['timeinperiod'] - p[2]) <= 0.03 or
-            (plays[play_index]['timeinperiod'] < p[2] and plays[play_index]['timeinperiod'] > merged[i + 1][2])):
-            # print(plays[play_index])
-            # print('time: ', p[0], p[2])
-            p.append(plays[play_index])
-            play_index += 1
-            times_inserted += 1
-
-    print(play_index, times_inserted)
-    return merged
+    return frames
 
 def export(json_data):
     """ Exports the data into a single json file on disk """
