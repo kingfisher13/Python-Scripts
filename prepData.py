@@ -67,6 +67,7 @@ def processPlayByPlayData():
             point_value = abs(currentMargin - margin)
             currentMargin = margin
             play['off']['pts'] = point_value
+            play['score'] = nba_play[10]
 
         plays.append(play)
 
