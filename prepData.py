@@ -176,7 +176,8 @@ def export(json_data, game_id):
     final = {
         'players': players,
         'teams': teams,
-        'gameData': json_data
+        'gameData': json_data,
+        'gameDate': moments_data['gamedate']
     }
     with open('merged-data/' + game_id + '-merged.json', 'w') as export:
         json.dump(final, export)
