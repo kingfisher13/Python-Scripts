@@ -16,12 +16,12 @@ def importData(game_id):
 
 def addDefensiveAssignment():
     """ Main function for adding the defensive asssignment """
-
+    global data
     for moment in data['gameData']:
         pairs = generatePairs(moment)
-        if not moment[6]:
-            moment[6] = None
-        moment[7] = pairs
+        if len(moment) != 7:
+            moment.append([])
+        moment.append(pairs)
 
 def generatePairs(moment):
     """ Generate defender/offender pairs """
@@ -71,6 +71,11 @@ def orderPlayerLocations(player, player_locations):
     # don't return the player (which is the closest)
     return ordered[1:]
 
+def export(game_id):
+    """ Exports the data into a single json file on disk """
+    with open('merged-data/' + game_id + '-withDefAssignments.json', 'w') as export:
+        json.dump(data, export)
+
 def main():
     if len(sys.argv) != 2:
         print("usage: 123123 where 123123 is the game_id")
@@ -81,6 +86,7 @@ def main():
     importData(game_id)
 
     addDefensiveAssignment()
+    export(game_id)
 
 if __name__ == '__main__':
     main()
