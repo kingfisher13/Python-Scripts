@@ -5,6 +5,7 @@
 
 import sys
 import json
+from pprint import pprint
 
 data = []
 
@@ -24,15 +25,24 @@ def processData():
             off = play[6]['off']
             pts = int(play[6]['off']['pts'])
 
-            player = next((p for p in home_players + visitor_players if p['playerid'] == off['player_id']), None)
-            if 'plusMinus' not in player:
-                player['plusMinus'] = 0
-
             # offensive plus
-            player['plusMinus'] += pts
+            off_player = next((p for p in home_players + visitor_players if p['playerid'] == off['player_id']), None)
+            if 'plusMinus' not in off_player:
+                off_player['plusMinus'] = 0
+            off_player['plusMinus'] += pts
 
-            print(play)
-            # print(player)
+            # defensive minus
+            pairs = play[7]
+            for pair in pairs:
+                if off_player['playerid'] in pair:
+                    for player in pair:
+                        if player != off_player['playerid']:
+                            def_player = next((p for p in home_players + visitor_players if p['playerid'] == player), None)
+
+                            if 'plusMinus' not in def_player:
+                                def_player['plusMinus'] = 0
+
+                            def_player['plusMinus'] -= pts
 
     return { data['teams']['home']['abbreviation']: home_players,  data['teams']['visitor']['abbreviation']: visitor_players}
 
@@ -47,6 +57,7 @@ def main():
     importData(game_id, pairing_alg)
 
     processed_data = processData()
+    print(processed_data)
 
 if __name__ == '__main__':
     main()
