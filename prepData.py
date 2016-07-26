@@ -112,7 +112,6 @@ def processMomentsData():
 def merge(plays, frames):
     """ Merge the play by play data with the moments data """
     play_index = 0
-    times_inserted = 0
 
     frames_index = 0
     for i, p in enumerate(plays):
