@@ -46,6 +46,11 @@ def processData():
 
     return { data['teams']['home']['abbreviation']: home_players,  data['teams']['visitor']['abbreviation']: visitor_players}
 
+def export(processed_data, game_id, pairing_alg):
+    """ Exports the data into a single json file on disk """
+    with open('merged-data/' + game_id + '-plusMinus-' + pairing_alg + '.json', 'w') as export:
+        json.dump(processed_data, export)
+
 def main():
     if len(sys.argv) != 3:
         print("usage: gameid pairing-algorithm")
@@ -57,7 +62,7 @@ def main():
     importData(game_id, pairing_alg)
 
     processed_data = processData()
-    print(processed_data)
+    export(processed_data, game_id, pairing_alg)
 
 if __name__ == '__main__':
     main()
