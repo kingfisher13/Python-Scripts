@@ -44,8 +44,8 @@ def processPlayByPlayData():
     currentMargin = 0
 
     for nba_play in pbp_data['resultSets'][0]['rowSet']:
-        # generate timeinquarter
-        timeinperiod = int(nba_play[6][:nba_play[6].find(':')]) * 60 + int(nba_play[6][nba_play[6].find(':') + 1:])
+        # generate timeinperiod
+        timeinperiod = int(nba_play[6][:nba_play[6].find(':')]) * 60 + int(nba_play[6][nba_play[6].find(':') + 1:]) + 2
 
         # parse the various playstrings
         wdw = whoDidWhat(nba_play[7:10], nba_play[13:16], nba_play[20:23], nba_play[27:30]) or {}
