@@ -41,6 +41,7 @@ def processPlayByPlayData():
     Figures out the timestamp;
     Parses the playstrings """
     plays = []
+    currentMargin = 0
 
     for nba_play in pbp_data['resultSets'][0]['rowSet']:
         # generate timeinquarter
@@ -57,6 +58,15 @@ def processPlayByPlayData():
             'timeinperiod': timeinperiod,
             **wdw
         }
+
+        if 'off' in play and nba_play[11]:
+            if nba_play[11] == 'TIE':
+                margin = 0
+            else:
+                margin = int(nba_play[11])
+            point_value = abs(currentMargin - margin)
+            currentMargin = margin
+            play['off']['pts'] = point_value
 
         plays.append(play)
 
