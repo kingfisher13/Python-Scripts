@@ -77,7 +77,14 @@ def whoDidWhat(details, player_1, player_2, player_3):
     home_play = parsePlay(details[0], 'home', player_1, player_2, player_3) or {}
     visitor_play = parsePlay(details[2], 'visitor', player_1, player_2, player_3) or {}
 
-    merged = {**home_play, **visitor_play}
+    if home_play:
+        playstring = details[0]
+    elif visitor_play:
+        playstring = details[2]
+    else:
+        playstring = details[1]
+
+    merged = {**home_play, **visitor_play, 'playstring': playstring}
     return merged
 
 def parsePlay(playstring, location, player_1, player_2, player_3):
