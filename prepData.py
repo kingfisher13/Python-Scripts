@@ -48,7 +48,7 @@ def processPlayByPlayData():
         timeinperiod = int(nba_play[6][:nba_play[6].find(':')]) * 60 + int(nba_play[6][nba_play[6].find(':') + 1:])
 
         # parse the various playstrings
-        wdw = whoDidWhat(nba_play[7:10], nba_play[13], nba_play[20], nba_play[27]) or {}
+        wdw = whoDidWhat(nba_play[7:10], nba_play[13:16], nba_play[20:23], nba_play[27:30]) or {}
 
         play = {
             'eventid': nba_play[1],
@@ -91,18 +91,26 @@ def parsePlay(playstring, location, player_1, player_2, player_3):
 
     if any(oplay in playstring for oplay in offensivePlays):
         side = 'off'
-        player_id = player_1
+        player_id = player_1[0]
+        player_team_id = player_1[2]
     elif any(dplay in playstring for dplay in defensivePlays):
         side = 'def'
-        player_id = player_2 or player_3
+        if player_2:
+            player_id = player_2[0]
+            player_team_id = player_2[2]
+        else:
+            player_id = player_3[0]
+            player_team_id = player_3[2]
     else:
         side = 'nue-' + location
-        player_id = player_1
+        player_id = player_1[0]
+        player_team_id = player_1[2]
 
     return {
         side: {
             'player_id': player_id,
-            'playstring': playstring
+            'playstring': playstring,
+            'player_team_id': player_team_id
         }
     }
 
