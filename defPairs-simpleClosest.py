@@ -74,7 +74,7 @@ def orderPlayerLocations(player, player_locations):
 
 def export(game_id):
     """ Exports the data into a single json file on disk """
-    with open('merged-data/' + game_id + '-withDefAssignments.json', 'w') as export:
+    with open('merged-data/' + game_id + '-simpleClosest.json', 'w') as export:
         json.dump(data, export)
 
 def main():
