@@ -50,7 +50,7 @@ def findClosestOppositeTeamPlayer(player, player_locations):
 
 def getPlayerTeam(id):
     """ Returns the team of the player with this id """
-    team = ''
+    team = None
     visitor = data['players']['visitor']
     for player in visitor:
         if player['playerid'] == id:
