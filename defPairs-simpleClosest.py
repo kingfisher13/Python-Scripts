@@ -1,4 +1,5 @@
-# NOTE - currently will generate more than 5 pairings
+# Simple closest opposing player pairings
+# NOTE - will generate more than 5 pairings
 # for instance, if a defender is the closest opposing player to 2 offenders
 # it will pair that defender with both
 
