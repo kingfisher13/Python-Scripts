@@ -50,7 +50,7 @@ def processPlayByPlayData():
         wdw = whoDidWhat(nba_play[7:10], nba_play[13], nba_play[20], nba_play[27]) or {}
 
         play = {
-            'eventnum': nba_play[1],
+            'eventid': nba_play[1],
             'eventmsgtype': nba_play[2],
             'eventmsgactiontype': nba_play[3],
             'period': nba_play[4],
