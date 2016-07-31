@@ -1,11 +1,13 @@
 Scripts
+(Look into modules)
 
-prepData.py
+prepData-SingleGame.py
   - takes a game id
   - imports the moment data and pbp data for that game
   - exports a merged and cleaned up json file for that game
 
-prepDataByFolder.py
+prepData.py
+  - called from the data folder (but not stored there)
   - grab all the game ids in the folder
   - download/scrape the data from nba.com and save it
   - run prepData.py on each game id
