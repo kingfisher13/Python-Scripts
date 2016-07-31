@@ -1,0 +1,27 @@
+Scripts
+
+prepData.py
+  - takes a game id
+  - imports the moment data and pbp data for that game
+  - exports a merged and cleaned up json file for that game
+
+prepDataByFolder.py
+  - grab all the game ids in the folder
+  - download/scrape the data from nba.com and save it
+  - run prepData.py on each game id
+
+generatePairings.py
+  - takes an argument of type of pairing (currently only simpleClosest is written)
+  - grabs all the preppedData in the folder and runs the pairing on it
+  - exports to type-of-pairing folder a bunch of jsons
+
+simpleClosest.py
+  - takes a single moment
+  - generates pairings based on simple closest algorithm
+  - (for each player not yet done, which opposite team player is closest)
+
+defPlusMinus.py
+  - runs through folder
+  - calculates plus/minus for each game in folder
+  - saves each games plus/minus as well as the average of the season
+  - exports a single json
