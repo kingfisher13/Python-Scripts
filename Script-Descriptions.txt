@@ -1,16 +1,18 @@
 Scripts
 (Look into modules)
 
-prepData-SingleGame.py
+prepData_SingleGame.py
   - takes a game id
   - imports the moment data and pbp data for that game
   - exports a merged and cleaned up json file for that game
 
 prepData.py
   - called from the data folder (but not stored there)
+  - if files are in .7z format, unzip them to temp jsons
   - grab all the game ids in the folder
-  - download/scrape the data from nba.com and save it
-  - run prepData.py on each game id
+  - download the data from nba.com and save it
+  - run prepData_SingleGame.py on each game id
+  - delete the temp json
 
 generatePairings.py
   - takes an argument of type of pairing (currently only simpleClosest is written)
