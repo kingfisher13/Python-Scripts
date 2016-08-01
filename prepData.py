@@ -16,7 +16,7 @@ def getIdsFromGlob():
 def getPbpDataFromNBASite(game_id):
     """ Download Play by play data from Nba.com and export to JSON """
     if not os.path.isfile(game_id + '.pbp.json'):
-        url = 'http://stats.nba.com/stats/playbyplay?GameID=' + game_id + '&RangeType=0&StartPeriod=0&EndPeriod=0&StartRange=0&EndRange=0'
+        url = 'http://stats.nba.com/stats/playbyplayv2?GameID=' + game_id + '&RangeType=0&StartPeriod=0&EndPeriod=0&StartRange=0&EndRange=0'
         user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
         headers = { 'user-agent' : user_agent }
         r = requests.get(url, headers=headers)
@@ -36,7 +36,7 @@ def main():
     # get pbp data
     for i in ids:
         getPbpDataFromNBASite(i)
-        # prepData_SingleGame.main(i)
+        prepData_SingleGame.main(i)
 
 if __name__ == '__main__':
     main()
