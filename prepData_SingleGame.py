@@ -204,7 +204,7 @@ def main(game_id):
 
     # export
     export(merged, game_id)
-    print('Data prepped')
+    print('Finished prepping: ' + game_id)
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:

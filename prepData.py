@@ -2,6 +2,18 @@ import sys, json, os, glob
 import requests
 import prepData_SingleGame
 
+def decompressGameData():
+    """ Decompress the 7z files used as data storage """
+    # relative paths
+    games = glob.glob('*.7z')
+
+    for game in games:
+        print('Decompressing: ' + game)
+        # uses Windows to use 7-zip to decompress the 7z files
+        # pipes the output to null so it is "quiet" in the CLI
+        os.system( '7z x ' + game + ' -y > nul')
+
+
 def getIdsFromGlob():
     """ Returns a list of gameids from json files in the current directory """
     # relative paths
@@ -24,19 +36,33 @@ def getPbpDataFromNBASite(game_id):
         with open(game_id + '.pbp.json', 'w') as export:
             json.dump(r.json(), export)
 
+def deleteJsonFile(game_id):
+    """
+    Deletes the json file that was created by decompressing the 7z file
+    Saves on disk space as the difference is 5Mb to 100Mb
+    """
+    os.remove(game_id + '.json')
+
+
 def main():
     if len(sys.argv) != 1:
         print("usage: no arguments, call in folder with moments data")
         sys.exit(1)
 
-    # get list of all files
+    # decompress any 7z files
+    decompressGameData()
+
+    # get list of all game ids
     ids = getIdsFromGlob()
+    print('Games to process:')
     print(ids)
 
     # get pbp data
     for i in ids:
         getPbpDataFromNBASite(i)
         prepData_SingleGame.main(i)
+        deleteJsonFile(i)
+
 
 if __name__ == '__main__':
     main()
