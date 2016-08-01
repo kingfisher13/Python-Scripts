@@ -1,9 +1,11 @@
 import sys, json, os, glob
 
 def getIdsFromGlob():
-    """ Returns a list of json files in the current directory """
+    """ Returns a list of gameids from json files in the current directory """
     # relative paths
     ids = glob.glob('*.json')
+
+    ids = list(map(lambda x: x[:-5], ids))
     return ids
 
 def main():
