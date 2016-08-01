@@ -9,11 +9,11 @@ teams = []
 
 def importData(game_id):
     """ Imports Data specified by the game number """
-    with open('data/' + game_id + '-pbp.json') as pbp_json_file:
+    with open(game_id + '-pbp.json') as pbp_json_file:
         global pbp_data
         pbp_data = json.load(pbp_json_file)
 
-    with open('data/' + game_id + '.json') as moments_json_file:
+    with open(game_id + '.json') as moments_json_file:
         global moments_data
         moments_data = json.load(moments_json_file)
 
@@ -183,13 +183,9 @@ def export(json_data, game_id):
     with open('merged-data/' + game_id + '-merged.json', 'w') as export:
         json.dump(final, export)
 
-def main():
-    if len(sys.argv) != 2:
-        print("usage: 123123 where 123123 is the game_id")
-        sys.exit(1)
-
+def main(game_id):
+    print('Prepping Data for: ' + game_id)
     # import data based on game_id
-    game_id = sys.argv[1]
     importData(game_id)
 
     # get the players and teams
@@ -207,4 +203,8 @@ def main():
     export(merged, game_id)
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) != 2:
+        print("usage: 123123 where 123123 is the game_id")
+        sys.exit(1)
+
+    main(sys.argv[1])

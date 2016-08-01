@@ -1,5 +1,6 @@
 import sys, json, os, glob
 import requests
+import prepData_SingleGame
 
 def getIdsFromGlob():
     """ Returns a list of gameids from json files in the current directory """
@@ -30,6 +31,7 @@ def main():
     # get pbp data
     for i in ids:
         getPbpDataFromNBASite(i)
+        prepData_SingleGame.main(i)
 
 if __name__ == '__main__':
     main()
