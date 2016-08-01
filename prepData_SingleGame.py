@@ -9,7 +9,7 @@ teams = []
 
 def importData(game_id):
     """ Imports Data specified by the game number """
-    with open(game_id + '-pbp.json') as pbp_json_file:
+    with open(game_id + '.pbp.json') as pbp_json_file:
         global pbp_data
         pbp_data = json.load(pbp_json_file)
 
@@ -93,6 +93,9 @@ def parsePlay(playstring, location, player_1, player_2, player_3):
     Figures out whether it is an offensive or defensive play. """
     if not playstring:
         return;
+
+    player_id = None
+    player_team_id = None
 
     offensivePlays = ['Dunk', 'Jump Shot', 'Bank Shot', 'Dunk Shot', 'Layup', 'Jumper', 'Hook', '3PT', 'MISS', 'Turnover', 'Free Throw', 'Offensive Charge Foul']
     defensivePlays = ['STEAL', 'BLOCK', 'L.B.FOUL', 'P.FOUL', 'S.FOUL', 'Shooting Block Foul', 'Personal Block Foul', 'T.Foul', 'Personal Take Foul']
@@ -180,7 +183,7 @@ def export(json_data, game_id):
         'gameDate': moments_data['gamedate'],
         'gameId': game_id
     }
-    with open('merged-data/' + game_id + '-merged.json', 'w') as export:
+    with open(game_id + '.merged.json', 'w') as export:
         json.dump(final, export)
 
 def main(game_id):
@@ -201,6 +204,7 @@ def main(game_id):
 
     # export
     export(merged, game_id)
+    print('Data prepped')
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
