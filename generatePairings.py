@@ -3,7 +3,7 @@ sys.path.append(os.path.dirname(__file__) + "/defensivePairingScripts")
 import simpleClosest
 
 def getIdsFromGlob(merged_dir):
-    """ Returns a list of gameids from json files in the current directory """
+    """ Returns a list of gameids from json files in the given directory """
     # relative paths
     ids = glob.glob(merged_dir + '*.json')
 
@@ -17,7 +17,7 @@ def getIdsFromGlob(merged_dir):
 
 def main():
     if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("usage: please specify type of pairing to use, and optionally the merged files dir")
+        print("usage: pairing-algorithm merged-files-directory(optional)")
         sys.exit(1)
 
     if len(sys.argv) != 3:
