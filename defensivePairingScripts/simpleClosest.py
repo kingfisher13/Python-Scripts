@@ -86,6 +86,7 @@ def main(game_id, merged_dir):
 
     addDefensiveAssignment()
     export(game_id)
+    print('Finished generating pairings for: ' + game_id)
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or len(sys.argv) > 3:
