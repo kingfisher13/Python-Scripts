@@ -3,15 +3,26 @@
 # Argument 1: Game ID
 # Argument 2: Pairing Algorithm that is being evaluated
 
-import sys
-import json
-from pprint import pprint
+import sys, json, os, glob
 
 data = []
 
-def importData(game_id, pairing_alg):
+def getIdsFromGlob(pairings_dir):
+    """ Returns a list of gameids from json files in the given directory """
+    # relative paths
+    ids = glob.glob(pairings_dir + '*.json')
+
+    pairings_dir_len = len(pairings_dir)
+
+    # get only ids from files in the current directory
+    ids = list(map(lambda x: x[pairings_dir_len:x.find('.')], ids))
+    # return only unique ids
+    ids = list(set(ids))
+    return ids
+
+def importData(game_id, pairing_alg, pairings_dir):
     """ Imports Data specified by the game number and pairing algorithm """
-    with open('merged-data/' + game_id + '-' + pairing_alg + '.json') as processed_json_file:
+    with open(pairings_dir + game_id + '.' + pairing_alg + '.json') as processed_json_file:
         global data
         data = json.load(processed_json_file)
 
@@ -48,21 +59,38 @@ def processData():
 
 def export(processed_data, game_id, pairing_alg):
     """ Exports the data into a single json file on disk """
-    with open('merged-data/' + game_id + '-plusMinus-' + pairing_alg + '.json', 'w') as export:
+    with open('defPlusMinus/' + game_id + '.' + pairing_alg + '.json', 'w') as export:
         json.dump(processed_data, export)
 
 def main():
-    if len(sys.argv) != 3:
-        print("usage: gameid pairing-algorithm")
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print("usage: pairing-algorithm pairings-folder(optional)")
         sys.exit(1)
 
-    # import data based on game_id
-    game_id = sys.argv[1]
-    pairing_alg = sys.argv[2]
-    importData(game_id, pairing_alg)
+    # parameters
+    pairing_alg = sys.argv[1]
+    if len(sys.argv) != 3:
+        pairings_dir = ''
+    else:
+        pairings_dir = sys.argv[2]
+        if pairings_dir[:-1] != '/':
+            pairings_dir += '/'
 
-    processed_data = processData()
-    export(processed_data, game_id, pairing_alg)
+    # create export directory if needed
+    os.makedirs('defPlusMinus', exist_ok=True)
+
+    # get list of all game ids
+    ids = getIdsFromGlob(pairings_dir)
+    print('Games to processs:')
+    print(ids)
+
+    # Go through game by game and generate def-plus-minus
+    for i in ids:
+        # import data based on game_id
+        importData(i, pairing_alg, pairings_dir)
+
+        processed_data = processData()
+        export(processed_data, i, pairing_alg)
 
 if __name__ == '__main__':
     main()
