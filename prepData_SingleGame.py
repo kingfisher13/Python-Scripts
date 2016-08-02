@@ -165,7 +165,7 @@ def merge(plays, frames):
             continue
         # play is ahead of the current frame
         elif p['timeinperiod'] < frames[frames_index][2]:
-            while p['timeinperiod'] < frames[frames_index][2] and p['timeinperiod'] != 0:
+            while frames_index < (len(frames) - 1) and p['timeinperiod'] < frames[frames_index][2] and p['timeinperiod'] != 0:
                 frames_index += 1
             if abs(p['timeinperiod'] - frames[frames_index][2]) <= 0.03:
                 frames[frames_index].append(p)
