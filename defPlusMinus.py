@@ -91,6 +91,7 @@ def main():
 
         processed_data = processData()
         export(processed_data, i, pairing_alg)
+        print('Finished generating defensive plus/minus for: ' + i)
 
 if __name__ == '__main__':
     main()
