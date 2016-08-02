@@ -1,6 +1,9 @@
 data/*
 merged-data/*
 
+# Python Related
+__pycache__/*
+
 # Logs
 logs
 *.log
