@@ -3,6 +3,7 @@ merged-data/*
 
 # Python Related
 __pycache__/*
+defensivePairingScripts/__pycache__/*
 
 # Logs
 logs

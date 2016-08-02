@@ -1,4 +1,6 @@
 import sys, json, os, glob
+sys.path.append(os.path.dirname(__file__) + "/defensivePairingScripts")
+import simpleClosest
 
 def getIdsFromGlob(merged_dir):
     """ Returns a list of gameids from json files in the current directory """
@@ -34,6 +36,10 @@ def main():
     ids = getIdsFromGlob(merged_dir)
     print('Games to processs:')
     print(ids)
+
+    # generate pairings
+    for i in ids:
+        simpleClosest.main(i, merged_dir)
 
 if __name__ == '__main__':
     main()

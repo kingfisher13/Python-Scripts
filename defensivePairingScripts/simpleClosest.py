@@ -9,9 +9,9 @@ import json
 # globals for easy access
 data = [];
 
-def importData(game_id):
+def importData(game_id, merged_dir):
     """ Imports Data specified by the game number """
-    with open('merged-data/' + game_id + '-merged.json') as processed_json_file:
+    with open(merged_dir + game_id + '.merged.json') as processed_json_file:
         global data
         data = json.load(processed_json_file)
 
@@ -74,20 +74,27 @@ def orderPlayerLocations(player, player_locations):
 
 def export(game_id):
     """ Exports the data into a single json file on disk """
-    with open('merged-data/' + game_id + '-simpleClosest.json', 'w') as export:
+    with open('pairings/' + game_id + '-simpleClosest.json', 'w') as export:
         json.dump(data, export)
 
-def main():
-    if len(sys.argv) != 2:
-        print("usage: 123123 where 123123 is the game_id")
-        sys.exit(1)
+def main(game_id, merged_dir):
+    if merged_dir[:-1] != '/':
+        merged_dir += '/'
 
     # import data based on game_id
-    game_id = sys.argv[1]
-    importData(game_id)
+    importData(game_id, merged_dir)
 
     addDefensiveAssignment()
     export(game_id)
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print("usage: 123123 where 123123 is the game_id, optional: merged directory")
+        sys.exit(1)
+
+    if len(sys.argv) == 1:
+        merged_dir = ''
+    else:
+        merged_dir = sys.argv[2]
+
+    main(sys.argv[1], merged_dir)
