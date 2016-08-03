@@ -15,17 +15,19 @@ prepData.py
   - delete the temp json
 
 generatePairings.py
-  - takes an argument of type of pairing (currently only simpleClosest is written)
-  - grabs all the preppedData in the folder and runs the pairing on it
-  - exports to type-of-pairing folder a bunch of jsons
+  - takes an argument of type of pairing (currently only simpleClosest is written) and merged files directory as arguments
+  - grabs all the merged files in the folder and runs the pairing python script on each one
 
 simpleClosest.py
-  - takes a single moment
-  - generates pairings based on simple closest algorithm
+  - takes game_id and merged files folder location as arguments
+  - generates pairings based on simple closest algorithm for that game
   - (for each player not yet done, which opposite team player is closest)
+  - exports a json file to a new folder called "pairings-" + merging-algorithm
 
 defPlusMinus.py
+  - takes pairing-algorithm and pairings folder location as arguments
   - runs through folder
   - calculates plus/minus for each game in folder
-  - saves each games plus/minus as well as the average of the season
-  - exports a single json
+  - saves each games plus/minus
+  - aggregates the folder games into a single json sorted by player
+  - exports both jsons for each game, and a single json of averages

@@ -15,14 +15,14 @@ def getIdsFromGlob(pairings_dir):
     pairings_dir_len = len(pairings_dir)
 
     # get only ids from files in the current directory
-    ids = list(map(lambda x: x[pairings_dir_len:x.find('.')], ids))
+    ids = list(map(lambda x: x[pairings_dir_len:x.find('.', pairings_dir_len)], ids))
     # return only unique ids
     ids = list(set(ids))
     return ids
 
 def importData(game_id, pairing_alg, pairings_dir):
     """ Imports Data specified by the game number and pairing algorithm """
-    with open(pairings_dir + game_id + '.' + pairing_alg + '.json') as processed_json_file:
+    with open(pairings_dir + game_id + '.json') as processed_json_file:
         global data
         data = json.load(processed_json_file)
 
@@ -59,7 +59,7 @@ def processData():
 
 def export(processed_data, game_id, pairing_alg):
     """ Exports the data into a single json file on disk """
-    with open('defPlusMinus/' + game_id + '.' + pairing_alg + '.json', 'w') as export:
+    with open('defPlusMinus.' + pairing_alg + '/' + game_id + '.json', 'w') as export:
         json.dump(processed_data, export)
 
 def main():
@@ -70,14 +70,17 @@ def main():
     # parameters
     pairing_alg = sys.argv[1]
     if len(sys.argv) != 3:
-        pairings_dir = ''
+        if os.path.isdir('pairings.' + pairing_alg):
+            pairings_dir = 'pairings.' + pairing_alg + '/'
+        else:
+            pairings_dir = ''
     else:
         pairings_dir = sys.argv[2]
         if pairings_dir[:-1] != '/':
             pairings_dir += '/'
 
     # create export directory if needed
-    os.makedirs('defPlusMinus', exist_ok=True)
+    os.makedirs('defPlusMinus.' + pairing_alg, exist_ok=True)
 
     # get list of all game ids
     ids = getIdsFromGlob(pairings_dir)

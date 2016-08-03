@@ -21,16 +21,16 @@ def main():
         sys.exit(1)
 
     if len(sys.argv) != 3:
-        merged_dir = ''
+        if os.path.isdir('merged'):
+            merged_dir = 'merged/'
+        else:
+            merged_dir = ''
     else:
         merged_dir = sys.argv[2]
         if merged_dir[:-1] != '/':
             merged_dir += '/'
 
     print('Using merged files found in: ' + merged_dir)
-
-    # create export directory if needed
-    os.makedirs('pairings', exist_ok=True)
 
     # get list of all game ids
     ids = getIdsFromGlob(merged_dir)

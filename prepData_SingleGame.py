@@ -9,7 +9,7 @@ teams = []
 
 def importData(game_id):
     """ Imports Data specified by the game number """
-    with open('pbp/' + game_id + '.pbp.json') as pbp_json_file:
+    with open('pbp/' + game_id + '.json') as pbp_json_file:
         global pbp_data
         pbp_data = json.load(pbp_json_file)
 
@@ -183,7 +183,7 @@ def export(json_data, game_id):
         'gameDate': moments_data['gamedate'],
         'gameId': game_id
     }
-    with open('merged/' + game_id + '.merged.json', 'w') as export:
+    with open('merged/' + game_id + '.json', 'w') as export:
         json.dump(final, export)
 
 def main(game_id):

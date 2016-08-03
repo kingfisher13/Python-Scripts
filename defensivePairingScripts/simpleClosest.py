@@ -3,15 +3,14 @@
 # for instance, if a defender is the closest opposing player to 2 offenders
 # it will pair that defender with both
 
-import sys
-import json
+import sys, json, os
 
 # globals for easy access
 data = [];
 
 def importData(game_id, merged_dir):
     """ Imports Data specified by the game number """
-    with open(merged_dir + game_id + '.merged.json') as processed_json_file:
+    with open(merged_dir + game_id + '.json') as processed_json_file:
         global data
         data = json.load(processed_json_file)
 
@@ -74,7 +73,10 @@ def orderPlayerLocations(player, player_locations):
 
 def export(game_id):
     """ Exports the data into a single json file on disk """
-    with open('pairings/' + game_id + '.simpleClosest.json', 'w') as export:
+    # create export directory if needed
+    os.makedirs('pairings.simpleClosest', exist_ok=True)
+
+    with open('pairings.simpleClosest/' + game_id + '.json', 'w') as export:
         json.dump(data, export)
 
 def main(game_id, merged_dir):
