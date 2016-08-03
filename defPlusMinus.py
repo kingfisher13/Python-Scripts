@@ -95,6 +95,12 @@ def calculateStats(agg):
                 'max': max(player['aggPlusMinus']),
                 'min': min(player['aggPlusMinus'])
             }
+        else:
+            player['stats'] = {
+                'average': '',
+                'max': '',
+                'min': ''
+            }
 
     return agg
 
