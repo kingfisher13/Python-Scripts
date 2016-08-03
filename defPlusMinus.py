@@ -88,7 +88,6 @@ def generateAggregates(all_data):
 
 def calculateStats(agg):
     """ Calculates averages/highs/lows from all the data """
-    print(agg)
     for player in agg['data']:
         if len(player['aggPlusMinus']) > 0:
             player['stats'] = {
