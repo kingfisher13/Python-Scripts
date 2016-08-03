@@ -71,7 +71,7 @@ def main():
         getPbpDataFromNBASite(i)
         prepData_SingleGame.main(i)
         deleteJsonFile(i)
-        print('(' + j + ' of ' + len(ids) + ')')
+        print('(' + str(j) + ' of ' + str(len(ids)) + ')')
         j += 1
 
 

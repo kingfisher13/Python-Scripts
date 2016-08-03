@@ -47,7 +47,7 @@ def main():
     j = 1
     for i in ids:
         getAlgFunction(pairing_alg).main(i, merged_dir)
-        print('(' + j + ' of ' + len(ids) + ')')
+        print('(' + str(j) + ' of ' + str(len(ids)) + ')')
         j += 1
 
 if __name__ == '__main__':
