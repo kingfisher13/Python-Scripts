@@ -44,8 +44,11 @@ def main():
     print(ids)
 
     # generate pairings
+    j = 1
     for i in ids:
-        fin = getAlgFunction(pairing_alg).main(i, merged_dir)
+        getAlgFunction(pairing_alg).main(i, merged_dir)
+        print('(' + j + ' of ' + len(ids) + ')')
+        j += 1
 
 if __name__ == '__main__':
     main()
