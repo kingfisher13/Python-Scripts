@@ -62,10 +62,13 @@ def main():
     print(ids)
 
     # get pbp data
+    j = 1
     for i in ids:
         getPbpDataFromNBASite(i)
         prepData_SingleGame.main(i)
         deleteJsonFile(i)
+        print('(' + j + ' of ' + len(ids) + ')')
+        j += 1
 
 
 if __name__ == '__main__':
