@@ -146,6 +146,10 @@ def merge(plays, frames):
     for i, p in enumerate(plays):
         period = p['period']
 
+        # at the end of the frames file
+        if frames_index >= (len(frames) - 1):
+            break
+
         # periods don't match
         if period != frames[frames_index][0]:
             if period > frames[frames_index][0]:
