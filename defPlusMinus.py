@@ -109,23 +109,7 @@ def exportAggregate(agg, pairing_alg):
     with open('defPlusMinus.' + pairing_alg + '/aggregate.json', 'w') as export:
         json.dump(agg, export)
 
-def main():
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("usage: pairing-algorithm pairings-folder(optional)")
-        sys.exit(1)
-
-    # parameters
-    pairing_alg = sys.argv[1]
-    if len(sys.argv) != 3:
-        if os.path.isdir('pairings.' + pairing_alg):
-            pairings_dir = 'pairings.' + pairing_alg + '/'
-        else:
-            pairings_dir = ''
-    else:
-        pairings_dir = sys.argv[2]
-        if pairings_dir[:-1] != '/':
-            pairings_dir += '/'
-
+def main(pairing_alg, pairings_dir):
     # create export directory if needed
     os.makedirs('defPlusMinus.' + pairing_alg, exist_ok=True)
 
@@ -151,4 +135,20 @@ def main():
     exportAggregate(agg, pairing_alg)
 
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print("usage: pairing-algorithm pairings-folder(optional)")
+        sys.exit(1)
+
+    # parameters
+    pairing_alg = sys.argv[1]
+    if len(sys.argv) != 3:
+        if os.path.isdir('pairings.' + pairing_alg):
+            pairings_dir = 'pairings.' + pairing_alg + '/'
+        else:
+            pairings_dir = ''
+    else:
+        pairings_dir = sys.argv[2]
+        if pairings_dir[:-1] != '/':
+            pairings_dir += '/'
+
+    main(pairing_alg, pairings_dir)

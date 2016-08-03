@@ -15,11 +15,17 @@ def getIdsFromGlob(merged_dir):
     ids = list(set(ids))
     return ids
 
+def getAlgFunction(pairing_alg):
+    if pairing_alg == 'simpleClosest':
+        return simpleClosest
+
 def main():
     if len(sys.argv) < 2 or len(sys.argv) > 3:
         print("usage: pairing-algorithm merged-files-directory(optional)")
         sys.exit(1)
 
+    # parameters
+    pairing_alg = sys.argv[1]
     if len(sys.argv) != 3:
         if os.path.isdir('merged'):
             merged_dir = 'merged/'
@@ -39,7 +45,7 @@ def main():
 
     # generate pairings
     for i in ids:
-        simpleClosest.main(i, merged_dir)
+        fin = getAlgFunction(pairing_alg).main(i, merged_dir)
 
 if __name__ == '__main__':
     main()
