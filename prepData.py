@@ -45,16 +45,20 @@ def deleteJsonFile(game_id):
 
 
 def main():
-    if len(sys.argv) != 1:
-        print("usage: no arguments, call in folder with moments data")
+    if len(sys.argv) < 1 or len(sys.argv) > 2:
+        print("usage: only-process-extracted-jsons(optional flag)")
         sys.exit(1)
+
+    only_extracted = (len(sys.argv) == 2)
+    print(only_extracted)
 
     # create export directories if needed
     os.makedirs('pbp', exist_ok=True)
     os.makedirs('merged', exist_ok=True)
 
     # decompress any 7z files
-    decompressGameData()
+    if not only_extracted:
+        decompressGameData()
 
     # get list of all game ids
     ids = getIdsFromGlob()
