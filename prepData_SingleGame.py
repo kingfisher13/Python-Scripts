@@ -149,7 +149,7 @@ def merge(plays, frames):
         # periods don't match
         if period != frames[frames_index][0]:
             if period > frames[frames_index][0]:
-                while period != frames[frames_index][0]:
+                while frames_index < (len(frames) - 1) and period != frames[frames_index][0]:
                     frames_index += 1
             elif period < frames[frames_index][0]:
                 continue
