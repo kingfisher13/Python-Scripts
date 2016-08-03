@@ -68,7 +68,6 @@ def generateAggregates(all_data):
     for game in all_data:
         for team in all_data[game]:
             for player in all_data[game][team]:
-                player['team'] = team
                 if 'plusMinus' not in player:
                     continue
 
@@ -77,18 +76,20 @@ def generateAggregates(all_data):
                 else:
                     aggregate[player['playerid']] = {
                         'playerid': player['playerid'],
+                        'team': team,
                         'position': player['position'],
                         'lastname': player['lastname'],
                         'jersey': player['jersey'],
                         'firstname': player['firstname'],
                         'aggPlusMinus': [player['plusMinus']]
                     }
-    return aggregate
+
+    return {'data': list(aggregate.values())}
 
 def calculateStats(agg):
     """ Calculates averages/highs/lows from all the data """
-    for pid in agg:
-        player = agg[pid]
+    print(agg)
+    for player in agg['data']:
         if len(player['aggPlusMinus']) > 0:
             player['stats'] = {
                 'average': sum(player['aggPlusMinus']) / len(player['aggPlusMinus']),
