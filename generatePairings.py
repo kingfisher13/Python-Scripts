@@ -46,6 +46,7 @@ def main():
     # generate pairings
     j = 1
     for i in ids:
+        print('Processing: ' + i)
         getAlgFunction(pairing_alg).main(i, merged_dir)
         print('(' + str(j) + ' of ' + str(len(ids)) + ')')
         j += 1
