@@ -4,8 +4,10 @@
 # Argument 2: Pairing Algorithm that is being evaluated
 
 import sys, json, os, glob
+import requests
 
 data = []
+box_scores_json = None
 
 def getIdsFromGlob(pairings_dir):
     """ Returns a list of gameids from json files in the given directory """
@@ -22,12 +24,31 @@ def getIdsFromGlob(pairings_dir):
 
 def importData(game_id, pairing_alg, pairings_dir):
     """ Imports Data specified by the game number and pairing algorithm """
+    with open('boxScores/' + game_id + '.json') as box_scores_json_file:
+        global box_scores_json
+        box_scores_json = json.load(box_scores_json_file)
     with open(pairings_dir + game_id + '.json') as processed_json_file:
         global data
         data = json.load(processed_json_file)
 
+def getBoxScoreDataFromNBASite(game_id):
+    """ Download Box score data from Nba.com and export to JSON """
+    if not os.path.isfile('boxScores/' + game_id + '.json'):
+        url = 'http://stats.nba.com/stats/boxscoretraditionalv2?EndPeriod=10&EndRange=28800&GameID=' + game_id + '&RangeType=0&Season=2015-16&SeasonType=Regular+Season&StartPeriod=1&StartRange=0'
+        user_agent = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
+        headers = { 'user-agent' : user_agent }
+        r = requests.get(url, headers=headers)
+        print('Downloading box score for: ' + game_id)
+        data = r.json()
+        data['resultSets'][0]['rowSet'] = {x[4]: x for x in data['resultSets'][0]['rowSet']}
+        with open('boxScores/' + game_id + '.json', 'w') as export:
+            json.dump(data, export)
+
 def processData():
-    """ Calculates the Plus Minus for each player for the game """
+    """
+    Calculates the Plus Minus for each player for the game
+    Also pulls in total minutes from the official box score.
+    """
     home_players = data['players']['home']
     visitor_players = data['players']['visitor']
 
@@ -55,6 +76,13 @@ def processData():
 
                             def_player['plusMinus'] -= pts
 
+    for player in home_players + visitor_players:
+        gametime = box_scores_json['resultSets'][0]['rowSet'][str(player['playerid'])][8]
+        if gametime:
+            player['minutes'] = int(gametime[0:gametime.find(':')]) + (int(gametime[gametime.find(':') + 1:]) / 60)
+        else:
+            player['minutes'] = 0
+
     return { data['teams']['home']['abbreviation']: home_players,  data['teams']['visitor']['abbreviation']: visitor_players}
 
 def export(processed_data, game_id, pairing_alg):
@@ -73,6 +101,8 @@ def generateAggregates(all_data):
 
                 if player['playerid'] in aggregate:
                     aggregate[player['playerid']]['aggPlusMinus'].append(player['plusMinus'])
+                    aggregate[player['playerid']]['gamesPlayed'] += 1
+                    aggregate[player['playerid']]['minutesPlayed'] += player['minutes']
                 else:
                     aggregate[player['playerid']] = {
                         'playerid': player['playerid'],
@@ -81,7 +111,9 @@ def generateAggregates(all_data):
                         'lastname': player['lastname'],
                         'jersey': player['jersey'],
                         'firstname': player['firstname'],
-                        'aggPlusMinus': [player['plusMinus']]
+                        'aggPlusMinus': [player['plusMinus']],
+                        'minutesPlayed': player['minutes'],
+                        'gamesPlayed': 1
                     }
 
     return {'data': list(aggregate.values())}
@@ -112,6 +144,7 @@ def exportAggregate(agg, pairing_alg):
 def main(pairing_alg, pairings_dir):
     # create export directory if needed
     os.makedirs('defPlusMinus.' + pairing_alg, exist_ok=True)
+    os.makedirs('boxScores', exist_ok=True)
 
     # get list of all game ids
     ids = getIdsFromGlob(pairings_dir)
@@ -122,13 +155,16 @@ def main(pairing_alg, pairings_dir):
     all_data = {}
     j = 1
     for i in ids:
+        # download box scores if not already done
+        getBoxScoreDataFromNBASite(i)
+
         # import data based on game_id
         importData(i, pairing_alg, pairings_dir)
 
         processed_data = processData()
         all_data[i] = processed_data
         export(processed_data, i, pairing_alg)
-        print('Finished generating defensive plus/minus for: ' + i + ' (' + str(j) + ' of ' + str(len(ids)) + ')'')
+        print('Finished generating defensive plus/minus for: ' + i + ' (' + str(j) + ' of ' + str(len(ids)) + ')')
         j += 1
 
     print('Generating aggregates')
