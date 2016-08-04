@@ -120,6 +120,7 @@ def main(pairing_alg, pairings_dir):
 
     # Go through game by game and generate def-plus-minus
     all_data = {}
+    j = 1
     for i in ids:
         # import data based on game_id
         importData(i, pairing_alg, pairings_dir)
@@ -127,7 +128,8 @@ def main(pairing_alg, pairings_dir):
         processed_data = processData()
         all_data[i] = processed_data
         export(processed_data, i, pairing_alg)
-        print('Finished generating defensive plus/minus for: ' + i)
+        print('Finished generating defensive plus/minus for: ' + i + ' (' + str(j) + ' of ' + str(len(ids)) + ')'')
+        j += 1
 
     print('Generating aggregates')
     agg = generateAggregates(all_data)
