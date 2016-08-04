@@ -77,11 +77,12 @@ def processData():
                             def_player['plusMinus'] -= pts
 
     for player in home_players + visitor_players:
-        gametime = box_scores_json['resultSets'][0]['rowSet'][str(player['playerid'])][8]
-        if gametime:
-            player['minutes'] = int(gametime[0:gametime.find(':')]) + (int(gametime[gametime.find(':') + 1:]) / 60)
-        else:
-            player['minutes'] = 0
+        if str(player['playerid']) in box_scores_json['resultSets'][0]['rowSet']:
+            gametime = box_scores_json['resultSets'][0]['rowSet'][str(player['playerid'])][8]
+            if gametime:
+                player['minutes'] = int(gametime[0:gametime.find(':')]) + (int(gametime[gametime.find(':') + 1:]) / 60)
+            else:
+                player['minutes'] = 0
 
     return { data['teams']['home']['abbreviation']: home_players,  data['teams']['visitor']['abbreviation']: visitor_players}
 
