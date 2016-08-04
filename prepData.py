@@ -50,7 +50,6 @@ def main():
         sys.exit(1)
 
     only_extracted = (len(sys.argv) == 2)
-    print(only_extracted)
 
     # create export directories if needed
     os.makedirs('pbp', exist_ok=True)
