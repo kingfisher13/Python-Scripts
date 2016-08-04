@@ -40,12 +40,13 @@ def findClosestOppositeTeamPlayer(player, player_locations):
     """ Finds the closest opposite team player and returns his id """
     player_team = getPlayerTeam(player[1])
     players_sorted_by_distance = orderPlayerLocations(player, player_locations)
-    closest_player = None
+    closest_player = [0, 0]
     for p in players_sorted_by_distance:
         if (p[1] != -1 and
             getPlayerTeam(p[1]) != player_team):
             closest_player = p
             break
+
     return closest_player[1]
 
 def getPlayerTeam(id):
