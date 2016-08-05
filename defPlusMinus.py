@@ -102,8 +102,8 @@ def generateAggregates(all_data):
 
                 if player['playerid'] in aggregate:
                     aggregate[player['playerid']]['aggPlusMinus'].append(player['plusMinus'])
-                    aggregate[player['playerid']]['gamesPlayed'] += 1
-                    aggregate[player['playerid']]['minutesPlayed'] += player['minutes']
+                    aggregate[player['playerid']]['games'] += 1
+                    aggregate[player['playerid']]['minutes'] += player['minutes']
                 else:
                     aggregate[player['playerid']] = {
                         'playerid': player['playerid'],
@@ -113,17 +113,17 @@ def generateAggregates(all_data):
                         'jersey': player['jersey'],
                         'firstname': player['firstname'],
                         'aggPlusMinus': [player['plusMinus']],
-                        'minutesPlayed': player['minutes'],
-                        'gamesPlayed': 1
+                        'minutes': player['minutes'],
+                        'games': 1
                     }
 
     return {'data': list(aggregate.values())}
 
-def calculateStats(agg):
+def calculateStats(agg, pairing_alg):
     """ Calculates averages/highs/lows from all the data """
     for player in agg['data']:
         if len(player['aggPlusMinus']) > 0:
-            player['stats'] = {
+            player[pairing_alg] = {
                 'average': sum(player['aggPlusMinus']) / len(player['aggPlusMinus']),
                 'max': max(player['aggPlusMinus']),
                 'min': min(player['aggPlusMinus'])
@@ -170,7 +170,7 @@ def main(pairing_alg, pairings_dir):
 
     print('Generating aggregates')
     agg = generateAggregates(all_data)
-    agg = calculateStats(agg)
+    agg = calculateStats(agg, pairing_alg)
     exportAggregate(agg, pairing_alg)
 
 if __name__ == '__main__':
