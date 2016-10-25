@@ -1,5 +1,4 @@
 Scripts
-(Look into modules)
 
 prepData_SingleGame.py
   - takes a game id
@@ -31,3 +30,8 @@ defPlusMinus.py
   - saves each games plus/minus
   - aggregates the folder games into a single json sorted by player
   - exports both jsons for each game, and a single json of averages
+  
+ convertFullCourtToHalfCourt.py
+  - takes full court data and chops off the smaller half of the play
+  - then rotates the court 90 degrees so basket is on the bottom
+  - exports json to same folder
