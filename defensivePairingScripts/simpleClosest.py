@@ -6,7 +6,7 @@
 import sys, json, os
 
 # globals for easy access
-data = [];
+data = []
 
 def importData(game_id, merged_dir):
     """ Imports Data specified by the game number """
