@@ -16,6 +16,26 @@ def importData(game_id):
 def convertData():
     """ Converts Data into half court, rotated """
 
+    # left or right side of the court?
+    # determined by ball location of last frame
+    global data
+    left = data['gameData'][-1][5][0][2] < 50
+
+    for moment in data['gameData']:
+        for player in moment[5]:
+            if left:
+                # rotate 90 degrees
+                x = player[2]
+                player[2] = player[3]
+                player[3] = x + 3 # +3 is to account for new court dimensions
+            else:
+                player[2] -= 50
+
+                # rotate 90 degrees
+                x = player[2]
+                player[2] = -player[3] + 50
+                player[3] = x + 3 # +3 is to account for new court dimensions
+
 def exportData(game_id):
     """ Exports Data """
     with open(game_id + '.halfcourt.json', 'w') as export:
