@@ -22,19 +22,31 @@ def convertData():
     left = data['gameData'][-1][5][0][2] < 50
 
     for moment in data['gameData']:
-        for player in moment[5]:
-            if left:
+        if left:
+            for player in moment[5]:
                 # rotate 90 degrees
                 x = player[2]
                 player[2] = player[3]
                 player[3] = x + 3 # +3 is to account for new court dimensions
-            else:
+            if len(moment) == 7:
+                anno_x = moment[6][0]
+                moment[6][0] = moment[6][1]
+                moment[6][1] = anno_x + 3
+        else:
+            for player in moment[5]:
                 player[2] -= 50
 
                 # rotate 90 degrees
                 x = player[2]
                 player[2] = -player[3] + 50
                 player[3] = x + 3 # +3 is to account for new court dimensions
+            if len(moment) == 7:
+                moment[6][0] -= 50
+
+                anno_x = moment[6][0]
+                moment[6][0] = -moment[6][1] + 50
+                moment[6][1] = anno_x + 3
+
 
 def exportData(game_id):
     """ Exports Data """
