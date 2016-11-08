@@ -28,7 +28,7 @@ def convertData():
                 x = player[2]
                 player[2] = player[3]
                 player[3] = x + 3 # +3 is to account for new court dimensions
-            if len(moment) == 7:
+            if len(moment) > 6:
                 anno_x = moment[6][0]
                 moment[6][0] = moment[6][1]
                 moment[6][1] = anno_x + 3
@@ -40,7 +40,7 @@ def convertData():
                 x = player[2]
                 player[2] = -player[3] + 50
                 player[3] = x + 3 # +3 is to account for new court dimensions
-            if len(moment) == 7:
+            if len(moment) > 6:
                 moment[6][0] -= 50
 
                 anno_x = moment[6][0]
